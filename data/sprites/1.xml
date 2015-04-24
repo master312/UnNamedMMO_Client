@@ -1,0 +1,7 @@
+<sprite>
+    <filename>graphics/characters/1.png</filename>
+    <static enabled='false' /> 
+    <frames count='4' />
+    <background transparency='true' red='3' green='3' blue='3' />
+    <collisionRect x='4' y='2' width='10' height='20' />
+</sprite>
