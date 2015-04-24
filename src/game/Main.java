@@ -10,7 +10,7 @@ public class Main extends StateBasedGame {
 	public static final int SCREEN_WIDTH = 1024;
 	public static final int SCREEN_HEIGHT = 768;
 	public static final int TARGET_FPS = 60;
-	public static final float VERSION = 0.276f;
+	public static final float VERSION = 0.283f;
 	
 	public static final int SPLASHSCREEN = 0;
 	public static final int MAINMENU     = 1;

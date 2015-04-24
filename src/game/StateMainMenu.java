@@ -19,7 +19,6 @@ import org.newdawn.slick.state.transition.FadeOutTransition;
 
 import com.esotericsoftware.minlog.Log;
 
-import entities.Player;
 import gui.TextField;
 
 public class StateMainMenu extends BasicGameState{	
@@ -51,7 +50,6 @@ public class StateMainMenu extends BasicGameState{
 		//Creates common class
 		Common.get();
 		Common.get().initialize(100, 100);
-		Common.getPlayerDriverSt().setEntity(new Player(0, 10, 10, 1));
 		txtUsername = new TextField(container, container.getDefaultFont(),
 				200, 200, 300, 30);
 		txtUsername.setText("master312");

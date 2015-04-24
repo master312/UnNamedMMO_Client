@@ -108,6 +108,11 @@ public class Button extends AbstractComponent {
 		action = ah;
 	}
 	
+	/* Force execute this button action */
+	public void forceAction(){
+		action.onAction();
+	}
+	
 	@Override
 	public void render(GUIContext arg0, Graphics arg1) throws SlickException {
 		// TODO Auto-generated method stub

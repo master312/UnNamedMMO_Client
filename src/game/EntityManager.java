@@ -83,5 +83,12 @@ public class EntityManager {
 			g.drawImage(e.getStaticImg(), 
 				tmpEntityLoc.getX(), tmpEntityLoc.getY());
 		}
+		
+		if(e.isPawn()){
+			//If entity is pawn, draw its name
+			g.drawString(e.getName(), 
+					tmpEntityLoc.getX() - 5, 
+					tmpEntityLoc.getY() - 20);
+		}
 	}
 }

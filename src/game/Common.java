@@ -39,7 +39,7 @@ public class Common {
 	/* Returns entity with graphics initialized 
 	 * Sprite ID must be set first, it will just return unchanged entity if not. */
 	public Entity initEntityGraphics(Entity e){
-		if(e.getSpriteId() < 0){
+		if(e.getSpriteId() < 0 || e.isAnimated() || e.getStaticImg() != null){
 			return e;
 		}
 		Animation tmpAnim = null;

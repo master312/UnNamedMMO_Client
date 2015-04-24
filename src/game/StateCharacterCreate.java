@@ -34,7 +34,7 @@ public class StateCharacterCreate extends BasicGameState{
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
-		Entity e = Common.initEntityGraphicsSt(new Player(-1, 0, 0, 1));
+		Entity e = Common.initEntityGraphicsSt(new Player(-1, 0, 0, 30, 1));
 		player = (Player)e;
 		player.getAnimation().setCurrentFrame(9);
 		txtName = new TextField(container, container.getDefaultFont(),

@@ -1,7 +1,5 @@
 package game;
 
-import net.PacketBuilder;
-
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -41,15 +39,10 @@ public class StateInGame extends BasicGameState{
 		Common.getSpriteManagerSt().update();
 		
 		PlayerDriver plDriver = Common.getPlayerDriverSt();
-		
+
 		if(plDriver.update(delta)){
 			//If player was moved, move map camera
 			Common.getMapManagerSt().movePlayer(plDriver.getX(), plDriver.getY(), container);
-			PacketBuilder pBuild = new PacketBuilder();
-			pBuild.writeInt(666);
-			pBuild.writeInt(plDriver.getX());
-			pBuild.writeInt(plDriver.getY());
-			Common.getSocketSt().send(pBuild.getPacket(), true);
 		}
 	}
 

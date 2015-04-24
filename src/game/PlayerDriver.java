@@ -1,5 +1,6 @@
 package game;
 
+import net.NetProtocol;
 import game.KeyBinds.KeyAction;
 import entities.Player;
 import entities.Entity.Direction;
@@ -12,6 +13,8 @@ public class PlayerDriver {
 	private boolean isMoving = false;
 	private boolean keyDown[] = new boolean[4];
 	private Player entity = null;
+	/* Direction in short format, to be send to server */
+	private short srvDir = 0;
 	
 	public PlayerDriver(){
 		keyDown[0] = keyDown[1] = keyDown[2] = keyDown[3] = false;
@@ -47,41 +50,49 @@ public class PlayerDriver {
 
 	/* Returns true if player was moved */
 	public boolean update(int delta){
-		boolean toReturn = false;
 		if(entity == null)
-			return toReturn;
+			return false;
 		if(isMoving){
-			toReturn = true;
-			//System.out.println("asdasd");
-			int speed = entity.getCurrentSpeed();
+			float speed = ((float)entity.getCurrentSpeed() / 100) * delta;
+			System.out.println(speed);
 			switch(dir){
 			case NORTH:
 				entity.move(0, -speed);
+				srvDir = 0;
 				break;
 			case NORTHEAST:
 				entity.move(speed, -speed);
+				srvDir = 1;
 				break;
 			case EAST:
 				entity.move(speed, 0);
+				srvDir = 2;
 				break;
 			case SOUTHEAST:
 				entity.move(speed, speed);
+				srvDir = 3;
 				break;
 			case SOUTH:
 				entity.move(0, speed);
+				srvDir = 4;
 				break;
 			case SOUTHWEST:
 				entity.move(-speed, speed);
+				srvDir = 5;
 				break;
 			case WEST:
 				entity.move(-speed, 0);
+				srvDir = 6;
 				break;
 			case NORTHWEST:
 				entity.move(-speed, -speed);
+				srvDir = 7;
 				break;
 			}
+			sendUpdate();
+			return true;
 		}
-		return toReturn;
+		return false;
 	}
 	
 	public void calculateDirection(){
@@ -111,6 +122,11 @@ public class PlayerDriver {
 		}
 	}
 
+	/* Sends update packet to server */
+	public void sendUpdate(){
+		NetProtocol.clMove(srvDir);
+	}
+	
 	public Direction getDir() {
 		return dir;
 	}
@@ -144,10 +160,10 @@ public class PlayerDriver {
 	}
 	
 	public int getX(){
-		return entity.getLocX();
+		return (int)entity.getLocX();
 	}
 	
 	public int getY(){
-		return entity.getLocY();
+		return (int)entity.getLocY();
 	}
 }

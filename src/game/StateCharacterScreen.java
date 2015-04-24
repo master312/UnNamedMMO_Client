@@ -3,12 +3,14 @@ package game;
 import java.util.ArrayList;
 
 import net.ClientSocket;
+import net.NetProtocol;
 import net.OpCodes;
 import net.Packet;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -71,7 +73,10 @@ public class StateCharacterScreen extends BasicGameState{
 			buttons[i].render(container, g);
 		}
 		for(int i = 0; i < characters.size(); i++){
-			characters.get(i).getAnimation().draw((i * 100) + 120, 350);
+			Player tmpChar = characters.get(i);
+			tmpChar.getAnimation().draw((i * 100) + 120, 350);
+			g.setColor(Color.white);
+			g.drawString(tmpChar.getName(), (i * 100) + 100, 320);
 		}
 	}
 
@@ -106,15 +111,42 @@ public class StateCharacterScreen extends BasicGameState{
 			//Not all character objects are received yet
 			Entity tmpE = sock.getEntity();
 			if(tmpE != null){
-				characters.add((Player)Common.initEntityGraphicsSt(tmpE));
+				receiveCharacter(tmpE, game);
 			}
 		}else{
-			//Rady to go
-//			game.enterState(stateId + 1, new FadeOutTransition(), 
-//					new FadeInTransition());
+			if(container.getInput().isKeyDown(Input.KEY_ENTER) && charCount > 0){
+				buttons[0].forceAction();
+			}
 		}
 	}
 
+	private void receiveCharacter(Entity entity, StateBasedGame game){		
+		final StateBasedGame g = game;
+		final Player tmpPlayer = (Player)Common.initEntityGraphicsSt(entity);
+		/* Change animation frame, so that character is facing north */
+		tmpPlayer.getAnimation().setCurrentFrame(9);
+		characters.add(tmpPlayer);
+		
+		System.out.println("New char " + tmpPlayer.getName() + " " + tmpPlayer.getId());
+		
+		final int charId = tmpPlayer.getId();
+		buttons[characters.size() - 1].
+			setActionHandler(new ActionHandler(){
+			public void onAction(){
+				Common.getPlayerDriverSt().setEntity(tmpPlayer);
+				g.enterState(stateId + 2, new FadeOutTransition(), 
+						new FadeInTransition());
+				NetProtocol.clEnterWorld(charId);
+				try {
+					//Adds a little delay
+					Thread.sleep(300);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+	
 	@Override
 	public int getID() { return stateId; }
 
