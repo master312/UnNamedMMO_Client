@@ -44,6 +44,7 @@ public class EntityManager {
 	 * This function will handle graphics initializing for entiy. */
 	public void addEntity(Entity e){
 		entities.add(Common.get().initEntityGraphics(e));
+		System.out.println("New entity " + e.getName() + " added " + e.getId());
 	}
 	
 	/* Remove entity with id from manager */
@@ -90,5 +91,15 @@ public class EntityManager {
 					tmpEntityLoc.getX() - 5, 
 					tmpEntityLoc.getY() - 20);
 		}
+	}
+	
+	/* Return entity with ID, or NULL if not found */
+	public Entity getEntity(int id){
+		for(int i = 0; i < entities.size(); i++){
+			if(entities.get(i).getId() == id){
+				return entities.get(i);
+			}
+		}
+		return null;
 	}
 }

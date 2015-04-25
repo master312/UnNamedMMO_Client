@@ -9,7 +9,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class StateInGame extends BasicGameState{
 	private int stateId = -1;
-	
+	private GameNetworkHandler netHandler;
 	
 	public StateInGame(int _id){
 		stateId = _id;
@@ -18,6 +18,7 @@ public class StateInGame extends BasicGameState{
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
+		netHandler = new GameNetworkHandler();
 	}
 	
 	@Override
@@ -36,10 +37,11 @@ public class StateInGame extends BasicGameState{
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
+		netHandler.handleIncoming();
+		
 		Common.getSpriteManagerSt().update();
 		
 		PlayerDriver plDriver = Common.getPlayerDriverSt();
-
 		if(plDriver.update(delta)){
 			//If player was moved, move map camera
 			Common.getMapManagerSt().movePlayer(plDriver.getX(), plDriver.getY(), container);

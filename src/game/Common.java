@@ -13,6 +13,12 @@ import map.MapManager;
 public class Common {
 	private static Common commonClass = null;
 	
+	/* ID's for entity stat update packet */
+	class EntityUpdates{
+		public static final short POSITION = 1;
+		public static final short DIRECTION = 2;
+	}
+	
 	private ClientSocket socket = null;
 	private MapManager mapManager = null;
 	private EntityManager entityManager = null;

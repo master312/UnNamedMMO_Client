@@ -42,6 +42,7 @@ public class StateCharacterScreen extends BasicGameState{
 			throws SlickException {
 		charCount = -1;
 		characters.clear();
+		showButtons();
 	}
 	
 	@Override
@@ -116,6 +117,7 @@ public class StateCharacterScreen extends BasicGameState{
 		}else{
 			if(container.getInput().isKeyDown(Input.KEY_ENTER) && charCount > 0){
 				buttons[0].forceAction();
+				hideButtons();
 			}
 		}
 	}
@@ -133,6 +135,7 @@ public class StateCharacterScreen extends BasicGameState{
 		buttons[characters.size() - 1].
 			setActionHandler(new ActionHandler(){
 			public void onAction(){
+				hideButtons();
 				Common.getPlayerDriverSt().setEntity(tmpPlayer);
 				g.enterState(stateId + 2, new FadeOutTransition(), 
 						new FadeInTransition());
@@ -145,6 +148,18 @@ public class StateCharacterScreen extends BasicGameState{
 				}
 			}
 		});
+	}
+	
+	private void hideButtons(){
+		for(int i = 0; i < 5; i++){
+			buttons[i].hide();
+		}
+	}
+
+	private void showButtons(){
+		for(int i = 0; i < 5; i++){
+			buttons[i].show();
+		}
 	}
 	
 	@Override

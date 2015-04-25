@@ -22,6 +22,7 @@ public class Button extends AbstractComponent {
     private String text;
     private ButtonState state;
     private ActionHandler action = null;
+    private boolean isShowen;
     
     public Button(String text, GameContainer gc, Font font, int x, int y, 
     		int width, int height) {
@@ -32,6 +33,7 @@ public class Button extends AbstractComponent {
         this.width = width;
         this.height = height;
         this.gc = gc;
+        isShowen = true;
         state = ButtonState.NORMAL;
     }
 
@@ -64,6 +66,8 @@ public class Button extends AbstractComponent {
 	}
 	
 	public void render(GameContainer gc, Graphics g) {
+		if(!isShowen)
+			return;
 		if(state == ButtonState.NORMAL)
 			g.setColor(Color.white);
 		else
@@ -80,6 +84,8 @@ public class Button extends AbstractComponent {
 	}
 
 	public void mouseMoved(int odlx, int oldY, int newX, int newY){
+		if(!isShowen)
+			return;
 		if(isMoseOver(newX, newY)){
 			state = ButtonState.OVER;
 		}else{
@@ -88,6 +94,8 @@ public class Button extends AbstractComponent {
 	}
 	
 	public void mousePressed(int button, int newX, int newY){
+		if(!isShowen)
+			return;
 		if(isMoseOver(newX, newY)){
 			if(action != null)
 				action.onAction();
@@ -111,6 +119,14 @@ public class Button extends AbstractComponent {
 	/* Force execute this button action */
 	public void forceAction(){
 		action.onAction();
+	}
+	
+	public void hide(){
+		isShowen = false;
+	}
+	
+	public void show(){
+		isShowen = true;
 	}
 	
 	@Override

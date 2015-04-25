@@ -34,6 +34,7 @@ public class Main extends StateBasedGame {
     	try{
 			AppGameContainer appgc;
 			appgc = new AppGameContainer(new Main("2dMMO " + VERSION));
+			appgc.setAlwaysRender(true);
 			appgc.setTargetFrameRate(TARGET_FPS);	//Sets maximum FPS
 			appgc.setMinimumLogicUpdateInterval(33);
 			appgc.setMaximumLogicUpdateInterval(33);

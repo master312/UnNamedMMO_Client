@@ -8,6 +8,16 @@ import entities.Entity.Direction;
 /* This class handles user input, and character controll */
 public class PlayerDriver {
 	
+	/* Direction ID's received over network */
+	private static final int DIRECTION_NORT = 0;
+	private static final int DIRECTION_NORTHEAST = 1;
+	private static final int DIRECTION_EAST = 2;
+	private static final int DIRECTION_SOUTHEAST = 3;
+	private static final int DIRECTION_SOUTH = 4;
+	private static final int DIRECTION_SOUTHWEST = 5;
+	private static final int DIRECTION_WEST = 6;
+	private static final int DIRECTION_NORTHWEST = 7;
+	
 	/* In what direction is player currently going */
 	private Direction dir = Direction.NORTH;
 	private boolean isMoving = false;
@@ -54,39 +64,38 @@ public class PlayerDriver {
 			return false;
 		if(isMoving){
 			float speed = ((float)entity.getCurrentSpeed() / 100) * delta;
-			System.out.println(speed);
 			switch(dir){
 			case NORTH:
-				entity.move(0, -speed);
-				srvDir = 0;
+				//entity.move(0, -speed);
+				srvDir = DIRECTION_NORT;
 				break;
 			case NORTHEAST:
-				entity.move(speed, -speed);
-				srvDir = 1;
+				//entity.move(speed, -speed);
+				srvDir = DIRECTION_NORTHEAST;
 				break;
 			case EAST:
-				entity.move(speed, 0);
-				srvDir = 2;
+				//entity.move(speed, 0);
+				srvDir = DIRECTION_EAST;
 				break;
 			case SOUTHEAST:
-				entity.move(speed, speed);
-				srvDir = 3;
+				//entity.move(speed, speed);
+				srvDir = DIRECTION_SOUTHEAST;
 				break;
 			case SOUTH:
-				entity.move(0, speed);
-				srvDir = 4;
+				//entity.move(0, speed);
+				srvDir = DIRECTION_SOUTH;
 				break;
 			case SOUTHWEST:
-				entity.move(-speed, speed);
-				srvDir = 5;
+				//entity.move(-speed, speed);
+				srvDir = DIRECTION_SOUTHWEST;
 				break;
 			case WEST:
-				entity.move(-speed, 0);
-				srvDir = 6;
+				//entity.move(-speed, 0);
+				srvDir = DIRECTION_WEST;
 				break;
 			case NORTHWEST:
-				entity.move(-speed, -speed);
-				srvDir = 7;
+				//entity.move(-speed, -speed);
+				srvDir = DIRECTION_NORTHWEST;
 				break;
 			}
 			sendUpdate();
