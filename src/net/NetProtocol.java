@@ -10,7 +10,9 @@ public class NetProtocol {
 		pb.writeShort(OpCodes.CL_LOGIN);
 		pb.writeString(username);
 		pb.writeString(password);
-		Common.getSocketSt().send(pb.getPacket(), true);
+		Packet pack = pb.getPacket();
+		Common.getSocketSt().send(pack, true);
+		pack.clear();
 	}
 	
 	public static void clCreateCharacter(Player character){
@@ -22,7 +24,9 @@ public class NetProtocol {
 		PacketBuilder pb = new PacketBuilder();
 		pb.writeShort(OpCodes.CL_ENTER_WORLD);
 		pb.writeInt(charId);
-		Common.getSocketSt().send(pb.getPacket(), true);
+		Packet pack = pb.getPacket();
+		Common.getSocketSt().send(pack, true);
+		pack.clear();
 	}
 	
 	/* Sends move update to server */
@@ -30,7 +34,9 @@ public class NetProtocol {
 		PacketBuilder pb = new PacketBuilder();
 		pb.writeShort(OpCodes.CL_MOVE);
 		pb.writeShort(direction);
-		Common.getSocketSt().send(pb.getPacket(), true);
+		Packet pack = pb.getPacket();
+		Common.getSocketSt().send(pack, true);
+		pack.clear();
 	}
 
 }
