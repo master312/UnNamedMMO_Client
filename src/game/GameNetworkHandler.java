@@ -3,6 +3,7 @@ package game;
 import org.newdawn.slick.util.Log;
 
 import entities.Entity;
+import map.MapChunk;
 import net.ClientSocket;
 import net.OpCodes;
 import net.Packet;
@@ -39,6 +40,15 @@ public class GameNetworkHandler {
 				break;
 			}
 		}
+		while(true){
+			MapChunk chunk = sock.getChunk();
+			if(chunk != null){
+				Common.getMapManagerSt().addChunk(chunk);
+			}else{
+				break;
+			}
+		}
+		//addChunk
 	}
 	
 	private void handlePacket(Packet pack){

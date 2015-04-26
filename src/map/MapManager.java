@@ -24,6 +24,8 @@ public class MapManager {
 		public int getId() { return id; }
 	}
 	
+	//TODO: Remove these static variables. All of this is defined server side
+	
 	/* These values will be used if world width and height are not specified */
 	private static final int DEFAULT_WORLD_WIDTH = 100;
 	private static final int DEFAULT_WORLD_HEIGHT = 100;
@@ -87,12 +89,18 @@ public class MapManager {
 				MapChunk tmpChunk = chunks[i][j];
 				if(tmpChunk == null){
 					//TODO: Receive map from server... or something like thats
-					createNewChunk(i, j, container);
-					tmpChunk = chunks[i][j];
+					//createNewChunk(i, j, container);
+					//tmpChunk = chunks[i][j];
+					continue;
 				}
 				//TODO: Optimize this somehow. Do not call isTilesetLoaded() on every frame; Its slow
 				if(!isTilesetLoaded(tmpChunk.getTilesetId())){
 					loadTileset(tmpChunk.getTilesetId());
+				}
+				if(!tmpChunk.getIsInited()){
+					tmpChunk.setWindowHeight(container.getHeight());
+					tmpChunk.setWindowWidth(container.getWidth());
+					tmpChunk.setIsInited(true);
 				}
 				lookX = worldCamX + (i * chunkWidth * MapChunk.TILE_WIDTH);
 				lookY = worldCamY + (j * chunkHeight * MapChunk.TILE_HEIGHT);
@@ -251,11 +259,24 @@ public class MapManager {
 	/* Creates new chunk at coordinates x:y */
 	private void createNewChunk(int x, int y, GameContainer container){
 		chunks[x][y] = new MapChunk(chunkWidth, chunkHeight,
-				container.getWidth(), container.getHeight());
+				container.getWidth(), container.getHeight(), x, y);
 		chunks[x][y].initEmpty();
 		chunksLoaded.add(new Point(x, y));
 	}
-
+	
+	/* Adds new map chunk to map manager */
+	public void addChunk(MapChunk c){
+		Point tmpP = new Point(c.getLocX(), c.getLocY());
+		if(chunks[tmpP.getX()][tmpP.getY()] != null){
+			chunks[tmpP.getX()][tmpP.getY()] = null;
+			if(!chunksLoaded.contains(tmpP)){
+				chunksLoaded.remove(tmpP);
+			}
+		}
+		chunks[tmpP.getX()][tmpP.getY()] = c;
+		chunksLoaded.add(tmpP);
+	}
+	
 	public int getWorldCamX() {
 		return worldCamX;
 	}

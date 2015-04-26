@@ -3,6 +3,9 @@ package net;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import map.MapChunk;
+import map.Tile;
+
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -21,7 +24,7 @@ public class ClientSocket extends Listener{
 	private ArrayList<Object> packets = new ArrayList<Object>();
 	
 	public ClientSocket(){
-		client = new Client();
+		client = new Client(301001, 301001);
 	}
 	
 	public void connect(String ip, int tcpPort, int udpPort) throws IOException{
@@ -32,6 +35,12 @@ public class ClientSocket extends Listener{
 		client.getKryo().register(Player.class);
 		client.getKryo().register(entities.Entity.EntityType.class);
 		client.getKryo().register(entities.Entity.Direction.class);
+		client.getKryo().register(MapChunk.class);
+		client.getKryo().register(MapChunk.Layer.class);
+		client.getKryo().register(Tile.class);
+		client.getKryo().register(Tile[].class);
+		client.getKryo().register(Tile[][].class);
+		client.getKryo().register(short[].class);
 		
 		client.setTimeout(CONNECTION_TIMEOUT);
 
@@ -44,7 +53,8 @@ public class ClientSocket extends Listener{
 	
 	public void received(Connection c, Object p){
 		if(p instanceof Packet || p instanceof Entity
-				|| p instanceof Pawn || p instanceof Player){
+				|| p instanceof Pawn || p instanceof Player
+				|| p instanceof MapChunk){
 			packets.add(p);
 		}
 	}
@@ -70,6 +80,17 @@ public class ClientSocket extends Listener{
 		for(int i = 0; i < packets.size(); i++){
 			if(packets.get(i) instanceof Entity){
 				Entity tmpPack = (Entity) packets.get(i);
+				packets.remove(i);
+				return tmpPack;
+			}
+		}
+		return null;
+	}
+	
+	public MapChunk getChunk(){
+		for(int i = 0; i < packets.size(); i++){
+			if(packets.get(i) instanceof MapChunk){
+				MapChunk tmpPack = (MapChunk) packets.get(i);
 				packets.remove(i);
 				return tmpPack;
 			}
