@@ -24,7 +24,7 @@ public class ClientSocket extends Listener{
 	private ArrayList<Object> packets = new ArrayList<Object>();
 	
 	public ClientSocket(){
-		client = new Client(301001, 301001);
+		client = new Client(64000, 64000);
 	}
 	
 	public void connect(String ip, int tcpPort, int udpPort) throws IOException{

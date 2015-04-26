@@ -3,6 +3,7 @@ package game;
 import net.ClientSocket;
 
 import org.newdawn.slick.Animation;
+import org.newdawn.slick.GameContainer;
 
 import data.SpriteManager;
 import entities.Entity;
@@ -13,12 +14,6 @@ import map.MapManager;
 public class Common {
 	private static Common commonClass = null;
 	
-	/* ID's for entity stat update packet */
-	class EntityUpdates{
-		public static final short POSITION = 1;
-		public static final short DIRECTION = 2;
-	}
-	
 	private ClientSocket socket = null;
 	private MapManager mapManager = null;
 	private EntityManager entityManager = null;
@@ -26,15 +21,19 @@ public class Common {
 	private PlayerDriver playerDriver = null;
 	/* Sprite manager. Used to manage all sprites */
 	private SpriteManager spriteManager = null;
+	/* Screen size */
+	private int screenWidth = 0;
+	private int screenHeight = 0;
 	
 	public int testint = -1;
 	
-	public Common(){
+	public Common(GameContainer container){
+		screenWidth = container.getWidth();
+		screenHeight = container.getHeight();
 	}
 	
-	public void initialize(int worldWidth, int worldHeight){
-		mapManager = new MapManager(worldWidth, worldHeight);
-		mapManager.initWorld();
+	private void initSubclasses(){
+		mapManager = new MapManager();
 		entityManager = new EntityManager();
 		keyBinds = new KeyBinds();
 		playerDriver = new PlayerDriver();
@@ -119,9 +118,38 @@ public class Common {
 		return getKeyBindsSt().isAction(key, action);
 	}
 	
+	public int getScreenWidth() {
+		return screenWidth;
+	}
+	
+	public static int getScreenWidthSt() {
+		return commonClass.getScreenWidth();
+	}
+
+	public void setScreenWidth(int screenWidth) {
+		this.screenWidth = screenWidth;
+	}
+
+	public int getScreenHeight() {
+		return screenHeight;
+	}
+
+	public static int getScreenHeightSt(){
+		return commonClass.getScreenHeight();
+	}
+	
+	public void setScreenHeight(int screenHeight) {
+		this.screenHeight = screenHeight;
+	}
+
+	public static void initialize(GameContainer container){
+		if(commonClass != null)
+			return;
+		commonClass = new Common(container);
+		commonClass.initSubclasses();
+	}
+	
 	public static Common get(){
-		if(commonClass == null)
-			commonClass = new Common();
 		return commonClass;
 	}
 }

@@ -2,6 +2,8 @@ package entities;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Image;
+
+import com.esotericsoftware.kryo.serializers.FieldSerializer.Optional;
 /* This is base class for every entity in game */
 public class Entity {
 	public enum Direction{
@@ -13,6 +15,17 @@ public class Entity {
 		SOUTHWEST { public String toString() { return "SOUTHWEST"; } }, 
 		WEST { public String toString() { return "WEST"; } }, 
 		NORTHWEST { public String toString() { return "NORTHWEST"; } }
+	}
+	public static class NetDirection {
+		/* Direction ID's over network */
+		public static final int DIRECTION_NORT = 0;
+		public static final int DIRECTION_NORTHEAST = 1;
+		public static final int DIRECTION_EAST = 2;
+		public static final int DIRECTION_SOUTHEAST = 3;
+		public static final int DIRECTION_SOUTH = 4;
+		public static final int DIRECTION_SOUTHWEST = 5;
+		public static final int DIRECTION_WEST = 6;
+		public static final int DIRECTION_NORTHWEST = 7;
 	}
 	public enum EntityType{
 		UNDEFINED{ public String toString(){ return "UNDEFINED"; } }, 
@@ -26,8 +39,10 @@ public class Entity {
 	private float locX = 0f, locY = 0f; 
 	private int width = 0, height = 0;
 	private int spriteId = -1;
-	private static Image staticImg = null;
-	private static Animation animation = null;
+	@Optional(value = "")	//Tells network serializer to ignore this variable
+	private Image staticImg = null;
+	@Optional(value = "")
+	private Animation animation = null;
 	private String name = "";
 	
 	

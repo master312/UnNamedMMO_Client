@@ -2,21 +2,12 @@ package game;
 
 import net.NetProtocol;
 import game.KeyBinds.KeyAction;
+import entities.Entity.NetDirection;
 import entities.Player;
 import entities.Entity.Direction;
 
 /* This class handles user input, and character controll */
 public class PlayerDriver {
-	
-	/* Direction ID's received over network */
-	private static final int DIRECTION_NORT = 0;
-	private static final int DIRECTION_NORTHEAST = 1;
-	private static final int DIRECTION_EAST = 2;
-	private static final int DIRECTION_SOUTHEAST = 3;
-	private static final int DIRECTION_SOUTH = 4;
-	private static final int DIRECTION_SOUTHWEST = 5;
-	private static final int DIRECTION_WEST = 6;
-	private static final int DIRECTION_NORTHWEST = 7;
 	
 	/* In what direction is player currently going */
 	private Direction dir = Direction.NORTH;
@@ -63,42 +54,33 @@ public class PlayerDriver {
 		if(entity == null)
 			return false;
 		if(isMoving){
-			float speed = ((float)entity.getCurrentSpeed() / 100) * delta;
 			switch(dir){
 			case NORTH:
-				//entity.move(0, -speed);
-				srvDir = DIRECTION_NORT;
+				srvDir = NetDirection.DIRECTION_NORT;
 				break;
 			case NORTHEAST:
-				//entity.move(speed, -speed);
-				srvDir = DIRECTION_NORTHEAST;
+				srvDir = NetDirection.DIRECTION_NORTHEAST;
 				break;
 			case EAST:
-				//entity.move(speed, 0);
-				srvDir = DIRECTION_EAST;
+				srvDir = NetDirection.DIRECTION_EAST;
 				break;
 			case SOUTHEAST:
-				//entity.move(speed, speed);
-				srvDir = DIRECTION_SOUTHEAST;
+				srvDir = NetDirection.DIRECTION_SOUTHEAST;
 				break;
 			case SOUTH:
-				//entity.move(0, speed);
-				srvDir = DIRECTION_SOUTH;
+				srvDir = NetDirection.DIRECTION_SOUTH;
 				break;
 			case SOUTHWEST:
-				//entity.move(-speed, speed);
-				srvDir = DIRECTION_SOUTHWEST;
+				srvDir = NetDirection.DIRECTION_SOUTHWEST;
 				break;
 			case WEST:
-				//entity.move(-speed, 0);
-				srvDir = DIRECTION_WEST;
+				srvDir = NetDirection.DIRECTION_WEST;
 				break;
 			case NORTHWEST:
-				//entity.move(-speed, -speed);
-				srvDir = DIRECTION_NORTHWEST;
+				srvDir = NetDirection.DIRECTION_NORTHWEST;
 				break;
 			}
-			sendUpdate();
+			NetProtocol.clMove(srvDir);
 			return true;
 		}
 		return false;
@@ -131,48 +113,20 @@ public class PlayerDriver {
 		}
 	}
 
-	/* Sends update packet to server */
-	public void sendUpdate(){
-		NetProtocol.clMove(srvDir);
-	}
-	
-	public Direction getDir() {
-		return dir;
-	}
+	public Direction getDir() { return dir; }
+	public void setDir(Direction dir) { this.dir = dir; }
 
-	public void setDir(Direction dir) {
-		this.dir = dir;
-	}
+	public boolean isMoving() { return isMoving; }
+	public void setMoving(boolean isMoving) { this.isMoving = isMoving; }
 
-	public boolean isMoving() {
-		return isMoving;
-	}
+	public boolean[] getKeyDown() { return keyDown; }
+	public void setKeyDown(boolean[] keyDown) { this.keyDown = keyDown; }
 
-	public void setMoving(boolean isMoving) {
-		this.isMoving = isMoving;
-	}
-
-	public boolean[] getKeyDown() {
-		return keyDown;
-	}
-
-	public void setKeyDown(boolean[] keyDown) {
-		this.keyDown = keyDown;
-	}
-
-	public Player getEntity() {
-		return entity;
-	}
-
+	public Player getEntity() { return entity; }
 	public void setEntity(Player entity) {
 		this.entity = (Player)Common.get().initEntityGraphics(entity);
 	}
 	
-	public int getX(){
-		return (int)entity.getLocX();
-	}
-	
-	public int getY(){
-		return (int)entity.getLocY();
-	}
+	public int getX(){ return (int)entity.getLocX(); }
+	public int getY(){ return (int)entity.getLocY(); }
 }

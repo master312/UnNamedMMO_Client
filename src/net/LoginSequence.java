@@ -2,7 +2,7 @@ package net;
 
 import game.Common;
 
-/* TODO: Comment */
+/* This class handles login sequence */
 public class LoginSequence {
 	public enum LoginState{
 		NOTHING, LOGIN_SEND, LOGIN_OK, LOGIN_FAIL

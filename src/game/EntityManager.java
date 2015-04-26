@@ -2,12 +2,10 @@ package game;
 
 import java.util.ArrayList;
 
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Point;
 
 import entities.*;
-import map.*;
 
 public class EntityManager {
 
@@ -15,36 +13,33 @@ public class EntityManager {
 	private ArrayList<Entity> entities = new ArrayList<Entity>();
 	/* Temporary location. Used for entity rendering */
 	private Point tmpEntityLoc = new Point(0, 0);
-	
-	public EntityManager(){	
+
+	public EntityManager(){
 	}
 	
 	public void update(int delta){
 	}
 	
-	public void render(Graphics g, GameContainer container){
-		MapManager mManager = Common.getMapManagerSt();
-		
+	public void render(Graphics g){
 		Entity tmpE = null;
 		for(int i = 0; i < entities.size(); i++){
 			tmpE = entities.get(i);
-			if(isOnScreen(tmpE, container, mManager)){
+			if(isOnScreen(tmpE)){
 				renderEntity(tmpE, g);
 			}
 		}
 		
 		tmpE = Common.getPlayerDriverSt().getEntity();
-		if(isOnScreen(tmpE, container, mManager)){
+		if(isOnScreen(tmpE)){
 			renderEntity(tmpE, g);
 		}
 	}
 	
 	/* Gives new entity to manager 
 	 * Entity must be initialized before calling this function
-	 * This function will handle graphics initializing for entiy. */
+	 * This function will handle graphics initializing for entity. */
 	public void addEntity(Entity e){
 		entities.add(Common.get().initEntityGraphics(e));
-		System.out.println("New entity " + e.getName() + " added " + e.getId());
 	}
 	
 	/* Remove entity with id from manager */
@@ -57,16 +52,19 @@ public class EntityManager {
 		}
 	}
 	
+	public void removeEntity(Entity e){
+		entities.remove(e);
+	}
+	
 	/* Returns whether this entity is on screen.
 	 * If true, store its 'on screen' to tmpEntityLoc variable */
-	private boolean isOnScreen(
-			Entity e, GameContainer container, MapManager mManager){
-		tmpEntityLoc.setX(e.getLocX() + mManager.getWorldCamX());
-		tmpEntityLoc.setY(e.getLocY() + mManager.getWorldCamY());
+	private boolean isOnScreen(Entity e){
+		tmpEntityLoc.setX(e.getLocX() + Common.getMapManagerSt().getWorldCamX());
+		tmpEntityLoc.setY(e.getLocY() + Common.getMapManagerSt().getWorldCamY());
 		if(tmpEntityLoc.getX() < -e.getWidth() ||
-			tmpEntityLoc.getX() > container.getWidth() ||
+			tmpEntityLoc.getX() > Common.getScreenWidthSt() ||
 			tmpEntityLoc.getY() < -e.getHeight() ||
-			tmpEntityLoc.getY() > container.getHeight()){
+			tmpEntityLoc.getY() > Common.getScreenHeightSt()){
 			//Entity is not on screen
 			return false;
 		}

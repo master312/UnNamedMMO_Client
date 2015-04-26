@@ -1,9 +1,12 @@
 package map;
 
+import game.Common;
+
 import java.util.ArrayList;
 
+import net.NetProtocol;
+
 import org.lwjgl.util.Point;
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -24,16 +27,8 @@ public class MapManager {
 		public int getId() { return id; }
 	}
 	
-	//TODO: Remove these static variables. All of this is defined server side
-	
-	/* These values will be used if world width and height are not specified */
-	private static final int DEFAULT_WORLD_WIDTH = 100;
-	private static final int DEFAULT_WORLD_HEIGHT = 100;
-	/* These values will be used if chunk width and height are not specified 
-	 * Chunk size can be changed on server (When server is done xD)*/
-	private static final int DEFAULT_CHUNK_WIDTH = 50;
-	private static final int DEFAULT_CHUNK_HEIGHT = 50;
-	/* TODO: COMMENT HERE! Move camera when this % of screen is left to end */
+	/* Percentage of screen size left between player and end of screen 
+	 * before camera moves*/
 	private static final int DEFAULT_CAMERA_SHIFT_X = 25;
 	private static final int DEFAULT_CAMERA_SHIFT_Y = 20;
 	/* Chunks clear interval. Chunks that are no longer needed are deleted
@@ -41,11 +36,10 @@ public class MapManager {
 	private static final long CHUNKS_CLEAR_INTERVAL = 15000;
 	private long lastClearTime = 0;
 	
-	
-	private int worldWidth = DEFAULT_WORLD_WIDTH;
-	private int worldHeight = DEFAULT_WORLD_HEIGHT;
-	private int chunkWidth = DEFAULT_CHUNK_WIDTH;
-	private int chunkHeight = DEFAULT_CHUNK_HEIGHT;
+	private int worldWidth = 0;
+	private int worldHeight = 0;
+	private int chunkWidth = 0;
+	private int chunkHeight = 0;
 	
 	/* List of tilesets */
 	private ArrayList<MapTileset> tilesets = new ArrayList<MapTileset>();
@@ -64,12 +58,10 @@ public class MapManager {
 	
 	public MapManager(){ }
 	
-	public MapManager(int _worldWidth, int _worldHeight){
-		worldWidth = _worldWidth;
-		worldHeight = _worldHeight;
-	}
 	
-	public void initWorld(){
+	public void initWorld(int _worldWidth, int _worldHeight){
+		worldWidth = _worldHeight;
+		worldHeight = _worldHeight;
 		chunks = new MapChunk[worldWidth][worldHeight];
 		for(int i = 0; i < worldWidth; i++){
 			for(int j = 0; j < worldHeight; j++){
@@ -77,30 +69,25 @@ public class MapManager {
 			}
 		}
 		
-		Log.info("MapManager: World initialized\n" + 
+		Log.info("MapManager: World initialized. " + 
 				"World size: " + worldWidth + "x" + worldHeight);
 	}
 	
-	public void render(GameContainer container, Graphics g){
+	public void render(Graphics g){
 		int lookX = 0;
 		int lookY = 0;
 		for(int i = start.getX(); i <= end.getX(); i++){
 			for(int j = start.getY(); j <= end.getY(); j++){
 				MapChunk tmpChunk = chunks[i][j];
 				if(tmpChunk == null){
-					//TODO: Receive map from server... or something like thats
-					//createNewChunk(i, j, container);
-					//tmpChunk = chunks[i][j];
+					//Request map from server
+					//TODO: Do not request map if its already requested
+					NetProtocol.clRequestMap(i, j);
 					continue;
 				}
 				//TODO: Optimize this somehow. Do not call isTilesetLoaded() on every frame; Its slow
 				if(!isTilesetLoaded(tmpChunk.getTilesetId())){
 					loadTileset(tmpChunk.getTilesetId());
-				}
-				if(!tmpChunk.getIsInited()){
-					tmpChunk.setWindowHeight(container.getHeight());
-					tmpChunk.setWindowWidth(container.getWidth());
-					tmpChunk.setIsInited(true);
 				}
 				lookX = worldCamX + (i * chunkWidth * MapChunk.TILE_WIDTH);
 				lookY = worldCamY + (j * chunkHeight * MapChunk.TILE_HEIGHT);
@@ -116,13 +103,13 @@ public class MapManager {
 	
 	/* Calculate camera position, based on player coordinates
 	 * Player will always be in the center of screen */
-	public void movePlayer(int x, int y, GameContainer container){
+	public void movePlayer(int x, int y){
 		int screenX = x + worldCamX;
 		int screenY = y + worldCamY;
-		int minW = (container.getWidth() / 100) * DEFAULT_CAMERA_SHIFT_X;
-		int minH = (container.getHeight() / 100) * DEFAULT_CAMERA_SHIFT_Y;
-		int maxW = container.getWidth() - minW;
-		int maxH = container.getHeight() - minH;
+		int minW = (Common.getScreenWidthSt() / 100) * DEFAULT_CAMERA_SHIFT_X;
+		int minH = (Common.getScreenHeightSt() / 100) * DEFAULT_CAMERA_SHIFT_Y;
+		int maxW = Common.getScreenWidthSt() - minW;
+		int maxH = Common.getScreenHeightSt() - minH;
 		boolean isMoved = false;
 		
 		if(screenX > maxW){
@@ -143,15 +130,8 @@ public class MapManager {
 		}
 		
 		if(isMoved)
-			calculateStartEndTiles(container.getWidth(), container.getHeight());
-	}
-	
-	/* Move camera by this values */
-	public void moveCamera(int x, int y){
-		Log.debug("MapManager TODO: MoveCamera function");
-//		worldCamX += x;
-//		worldCamY += y;
-//		calculateStartEndTiles();
+			calculateStartEndTiles(Common.getScreenWidthSt(), 
+									Common.getScreenHeightSt());
 	}
 	
 	/* Convert pixels coordinates, to chunk coordinates */
@@ -256,14 +236,6 @@ public class MapManager {
 			System.gc();
 	}
 	
-	/* Creates new chunk at coordinates x:y */
-	private void createNewChunk(int x, int y, GameContainer container){
-		chunks[x][y] = new MapChunk(chunkWidth, chunkHeight,
-				container.getWidth(), container.getHeight(), x, y);
-		chunks[x][y].initEmpty();
-		chunksLoaded.add(new Point(x, y));
-	}
-	
 	/* Adds new map chunk to map manager */
 	public void addChunk(MapChunk c){
 		Point tmpP = new Point(c.getLocX(), c.getLocY());
@@ -277,21 +249,15 @@ public class MapManager {
 		chunksLoaded.add(tmpP);
 	}
 	
-	public int getWorldCamX() {
-		return worldCamX;
-	}
+	public int getWorldCamX() { return worldCamX; }
+	public void setWorldCamX(int worldCamX) { this.worldCamX = worldCamX; }
+	public int getWorldCamY() { return worldCamY; }
+	public void setWorldCamY(int worldCamY) { this.worldCamY = worldCamY; }
 
-	public void setWorldCamX(int worldCamX) {
-		this.worldCamX = worldCamX;
-	}
 
-	public int getWorldCamY() {
-		return worldCamY;
-	}
-
-	public void setWorldCamY(int worldCamY) {
-		this.worldCamY = worldCamY;
-	}
-	
+	public int getChunkWidth() { return chunkWidth; }
+	public void setChunkWidth(int _chunkWidth) { chunkWidth = _chunkWidth; }
+	public int getChunkHeight() { return chunkHeight; }
+	public void setChunkHeight(int _chunkHeight) { chunkHeight = _chunkHeight; }	
 	
 }

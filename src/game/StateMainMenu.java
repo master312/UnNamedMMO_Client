@@ -42,14 +42,12 @@ public class StateMainMenu extends BasicGameState{
 	public StateMainMenu(int _id) {
 		stateId = _id;
 	}
-
 	
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
 		//Creates common class
-		Common.get();
-		Common.get().initialize(100, 100);
+		Common.initialize(container);
 		txtUsername = new TextField(container, container.getDefaultFont(),
 				200, 200, 300, 30);
 		txtUsername.setText("master312");
