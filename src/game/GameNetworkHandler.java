@@ -17,6 +17,7 @@ public class GameNetworkHandler {
 	private class EntityUpdates{
 		public static final short POSITION = 1;
 		public static final short DIRECTION = 2;
+		public static final short POS_DIR = 3;
 	}
 	
 	public GameNetworkHandler(){
@@ -107,6 +108,11 @@ public class GameNetworkHandler {
 			tmpE.setLocY((int)pack.readInt());
 			break;
 		case EntityUpdates.DIRECTION:
+			break;
+		case EntityUpdates.POS_DIR:
+			tmpE.setLocX((int)pack.readInt());
+			tmpE.setLocY((int)pack.readInt());
+			tmpE.setNetDir(pack.readShort());
 			break;
 		}
 	}
