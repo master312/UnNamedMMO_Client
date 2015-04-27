@@ -47,4 +47,12 @@ public class NetProtocol {
 		pb.writeInt(y);
 		Common.getSocketSt().send(pb.getPacket(), true);
 	}
+	
+	public static void clChatMsg(short type, String message){
+		PacketBuilder pb = new PacketBuilder();
+		pb.writeShort(OpCodes.CL_CHAT_MSG);
+		pb.writeShort(type);
+		pb.writeString(message);
+		Common.getSocketSt().send(pb.getPacket(), true);
+	}
 }

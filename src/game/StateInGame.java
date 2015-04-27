@@ -2,6 +2,7 @@ package game;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -40,6 +41,8 @@ public class StateInGame extends BasicGameState{
 		Common.getMapManagerSt().render(g);
 		EntityManager em = Common.getEntityManagerSt();
 		em.render(g);
+		
+		Common.getChatBoxSt().render(container, g);
 	}
 
 	@Override
@@ -57,7 +60,13 @@ public class StateInGame extends BasicGameState{
 	}
 
 	public void keyPressed(int key, char c){
+		ChatBox cb = Common.getChatBoxSt();
+		if(cb.isFocused()){
+			return;
+		}
 		Common.getPlayerDriverSt().handleKeyDown(key);
+		if(key == Input.KEY_RETURN)
+			cb.startFocusInput();
 	}
 
 	public void keyReleased(int key, char c){

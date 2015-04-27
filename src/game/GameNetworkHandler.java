@@ -83,6 +83,9 @@ public class GameNetworkHandler {
 		case OpCodes.SR_ENT_REMOVE:
 			Common.getEntityManagerSt().removeEntity(pack.readInt());
 			break;
+		case OpCodes.SR_TEXT_MSG:
+			handleChat(pack);
+			break;
 		default:
 			Log.warn("GameNetworkHandler: Invalid opcode " + opCode);
 			break;
@@ -127,4 +130,11 @@ public class GameNetworkHandler {
 		em.addEntity(e);
 	}
 	
+	/* Handle incoming chat message */
+	private void handleChat(Packet pack){
+		short type = pack.readShort();
+		String sender = pack.readString();
+		String msg = pack.readString();
+		Common.getChatBoxSt().push(sender + ": " + msg);
+	}
 }

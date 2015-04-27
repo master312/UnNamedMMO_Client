@@ -38,6 +38,7 @@ public class TextField extends AbstractComponent {
     private int oldCursorPos;
     private boolean consume = true;
     private GameContainer gc;
+    private boolean isEnter = false;
     
     public TextField(GameContainer gc, Font font, int x, int y, int width, int height, ComponentListener listener) {
         this(gc, font, x, y, width, height);
@@ -324,7 +325,8 @@ public class TextField extends AbstractComponent {
                 }
             } else if (key == Input.KEY_RETURN) {
                 notifyListeners();
-                // Nobody more will be notified   
+                // Nobody more will be notified
+                isEnter = true;
                 if (consume) {
                     gc.getInput().consumeEvent();
                 }
@@ -351,6 +353,14 @@ public class TextField extends AbstractComponent {
 		return 0;
 	}
 
+	public boolean isEnter(){
+		if(isEnter){
+			isEnter = false;
+			return true;
+		}
+		return false;
+	}
+	
 	@Override
 	public void render(GUIContext arg0, Graphics arg1) throws SlickException {
 		// TODO Auto-generated method stub

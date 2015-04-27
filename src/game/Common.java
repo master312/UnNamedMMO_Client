@@ -14,6 +14,9 @@ import map.MapManager;
 public class Common {
 	private static Common commonClass = null;
 	
+	/* How many messages will be stored in chat history */
+	public static final int MAX_CHAT_HISTORY = 50;
+	
 	private ClientSocket socket = null;
 	private MapManager mapManager = null;
 	private EntityManager entityManager = null;
@@ -21,6 +24,7 @@ public class Common {
 	private PlayerDriver playerDriver = null;
 	/* Sprite manager. Used to manage all sprites */
 	private SpriteManager spriteManager = null;
+	private ChatBox chatBox = null;
 	/* Screen size */
 	private int screenWidth = 0;
 	private int screenHeight = 0;
@@ -30,6 +34,7 @@ public class Common {
 	public Common(GameContainer container){
 		screenWidth = container.getWidth();
 		screenHeight = container.getHeight();
+		chatBox = new ChatBox(container);
 	}
 	
 	private void initSubclasses(){
@@ -140,6 +145,14 @@ public class Common {
 	
 	public void setScreenHeight(int screenHeight) {
 		this.screenHeight = screenHeight;
+	}
+	
+	public ChatBox getChatBox() {
+		return chatBox;
+	}
+
+	public static ChatBox getChatBoxSt(){
+		return commonClass.getChatBox();
 	}
 
 	public static void initialize(GameContainer container){
