@@ -1,4 +1,4 @@
 # UnNamedMMO_Client
-2d MMORPG Client
 
-TODO:...
+Open world MMO game client writen in java.
+Project is still in very early phase
