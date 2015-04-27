@@ -2,6 +2,7 @@ package game;
 
 import java.util.ArrayList;
 
+import org.newdawn.slick.Animation;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Point;
 
@@ -18,6 +19,10 @@ public class EntityManager {
 	}
 	
 	public void update(int delta){
+		for(int i = 0; i < entities.size(); i++){
+			updateAnimation(entities.get(i), delta);
+		}
+		updateAnimation(Common.getPlayerDriverSt().getEntity(), delta);
 	}
 	
 	public void render(Graphics g){
@@ -40,6 +45,9 @@ public class EntityManager {
 	 * This function will handle graphics initializing for entity. */
 	public void addEntity(Entity e){
 		entities.add(Common.get().initEntityGraphics(e));
+		if(e.isPawn()){
+			((Pawn) e).calcAnimSpeed();
+		}
 	}
 	
 	/* Remove entity with id from manager */
@@ -88,6 +96,21 @@ public class EntityManager {
 			g.drawString(e.getName(), 
 					tmpEntityLoc.getX() - 5, 
 					tmpEntityLoc.getY() - 20);
+		}
+	}
+	
+	private void updateAnimation(Entity e, int delta){
+		Animation tmp = e.getAnimation();
+		if(e.isPawn()){
+			if(!((Pawn) e).isUpdated()){
+				tmp.setCurrentFrame(e.getAnimFrameStart());
+				return;
+			}
+		}
+		tmp.update(delta);
+		if(tmp.getFrame() > e.getAnimFrameEnd() 
+				|| tmp.getFrame() < e.getAnimFrameStart()){
+			tmp.setCurrentFrame(e.getAnimFrameStart());
 		}
 	}
 	

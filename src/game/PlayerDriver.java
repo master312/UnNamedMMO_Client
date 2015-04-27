@@ -125,6 +125,7 @@ public class PlayerDriver {
 	public Player getEntity() { return entity; }
 	public void setEntity(Player entity) {
 		this.entity = (Player)Common.get().initEntityGraphics(entity);
+		entity.calcAnimSpeed();
 	}
 	
 	public int getX(){ return (int)entity.getLocX(); }

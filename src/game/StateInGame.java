@@ -36,8 +36,10 @@ public class StateInGame extends BasicGameState{
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 			throws SlickException {
+		
 		Common.getMapManagerSt().render(g);
-		Common.getEntityManagerSt().render(g);
+		EntityManager em = Common.getEntityManagerSt();
+		em.render(g);
 	}
 
 	@Override
@@ -45,8 +47,8 @@ public class StateInGame extends BasicGameState{
 			throws SlickException {
 		netHandler.handleIncoming();			//Handle incoming data
 		Common.getSpriteManagerSt().update();	//Update sprite manager
+		Common.getEntityManagerSt().update(delta);
 		PlayerDriver plDriver = Common.getPlayerDriverSt();
-		
 		
 		if(plDriver.update(delta)){
 			//If player was moved, move map camera

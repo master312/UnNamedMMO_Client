@@ -3,6 +3,7 @@ package game;
 import org.newdawn.slick.util.Log;
 
 import entities.Entity;
+import entities.Pawn;
 import map.MapChunk;
 import net.ClientSocket;
 import net.NetProtocol;
@@ -101,6 +102,9 @@ public class GameNetworkHandler {
 			//Request pawn info from server
 			NetProtocol.clRequestPawn(tmpId);
 			return;
+		}
+		if(tmpE.isPawn()){
+			((Pawn) tmpE).setUpdated();
 		}
 		switch(pack.readShort()){
 		case EntityUpdates.POSITION:

@@ -60,6 +60,9 @@ public class SpriteManager {
 		public void removeUsage() { usage --; }
 	}
 	
+	/* Number of directions pre sprite
+	 * Can be 4 or 8*/
+	public static final int DIR_COUNT = 4;
 	/* If sprite is not used for this amount if time, 
 	 * it will be deleted from memory */
 	private static final long SPRITE_TIMEOUT = 30000;
@@ -181,7 +184,7 @@ public class SpriteManager {
 		int frameH = img.getHeight();
 		if(!isStatic){
 			frameW = img.getWidth() / frames;
-			frameH = img.getHeight() / 4;
+			frameH = img.getHeight() / DIR_COUNT;
 		}
 		SpriteSheet tmpSprite = null;
 		if(isBgTransparent){

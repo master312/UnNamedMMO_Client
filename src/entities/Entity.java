@@ -43,6 +43,10 @@ public class Entity {
 	private Image staticImg = null;
 	@Optional(value = "")
 	private Animation animation = null;
+	@Optional(value = "")
+	private int animFrameStart = 0;	//At what frame animation starts
+	@Optional(value = "")
+	private int animFrameEnd = 0;	//And and what frame ends
 	private String name = "";
 	private Direction dir = Direction.NORTH;
 
@@ -100,24 +104,32 @@ public class Entity {
 		switch(netDir){
 		case NetDirection.DIRECTION_NORT:
 			dir = Direction.NORTH;
+			setAnimFrameStart(0);
+			setAnimFrameEnd(3);
 			break;
 		case NetDirection.DIRECTION_NORTHEAST:
 			dir = Direction.NORTHEAST;
 			break;
 		case NetDirection.DIRECTION_EAST:
 			dir = Entity.Direction.EAST;
+			setAnimFrameStart(12);
+			setAnimFrameEnd(15);
 			break;
 		case NetDirection.DIRECTION_SOUTHEAST:
 			dir = Entity.Direction.SOUTHEAST;
 			break;
 		case NetDirection.DIRECTION_SOUTH:
 			dir = Direction.SOUTH;
+			setAnimFrameStart(8);
+			setAnimFrameEnd(11);
 			break;
 		case NetDirection.DIRECTION_SOUTHWEST:
 			dir = Direction.SOUTHWEST;
 			break;
 		case NetDirection.DIRECTION_WEST:
 			dir = Direction.WEST;
+			setAnimFrameStart(4);
+			setAnimFrameEnd(7);
 			break;
 		case NetDirection.DIRECTION_NORTHWEST:
 			dir = Direction.NORTHWEST;
@@ -207,6 +219,24 @@ public class Entity {
 	
 	public boolean equals(Object o){
 		return id == ((Entity) o).getId();
+	}
+
+	public int getAnimFrameStart() {
+		return animFrameStart;
+	}
+
+	public void setAnimFrameStart(int animFrameStart) {
+		if(animation != null)
+			animation.setCurrentFrame(animFrameStart);
+		this.animFrameStart = animFrameStart;
+	}
+
+	public int getAnimFrameEnd() {
+		return animFrameEnd;
+	}
+
+	public void setAnimFrameEnd(int animFrameEnd) {
+		this.animFrameEnd = animFrameEnd;
 	}
 	
 }
