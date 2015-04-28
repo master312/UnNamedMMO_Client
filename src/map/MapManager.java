@@ -47,6 +47,8 @@ public class MapManager {
 	private MapChunk chunks[][];
 	/* List of loaded chunks */
 	private ArrayList<Point> chunksLoaded = new ArrayList<Point>();
+	/* List of chunks allready requested from server */
+	private ArrayList<Point> chunksRequested = new ArrayList<Point>();
 	
 	/* World camera position, in pixels */
 	private int worldCamX = 0;
@@ -82,7 +84,11 @@ public class MapManager {
 				if(tmpChunk == null){
 					//Request map from server
 					//TODO: Do not request map if its already requested
-					NetProtocol.clRequestMap(i, j);
+					Point p = new Point(i, j);
+					if(!chunksRequested.contains(p)){
+						NetProtocol.clRequestMap(i, j);
+						chunksRequested.add(p);
+					}
 					continue;
 				}
 				//TODO: Optimize this somehow. Do not call isTilesetLoaded() on every frame; Its slow
@@ -239,6 +245,7 @@ public class MapManager {
 	/* Adds new map chunk to map manager */
 	public void addChunk(MapChunk c){
 		Point tmpP = new Point(c.getLocX(), c.getLocY());
+		chunksRequested.remove(tmpP);
 		if(chunks[tmpP.getX()][tmpP.getY()] != null){
 			chunks[tmpP.getX()][tmpP.getY()] = null;
 			if(!chunksLoaded.contains(tmpP)){
