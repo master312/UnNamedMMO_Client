@@ -30,7 +30,7 @@ public class NetProtocol {
 		PacketBuilder pb = new PacketBuilder();
 		pb.writeShort(OpCodes.CL_MOVE);
 		pb.writeShort(direction);
-		Common.getSocketSt().send(pb.getPacket(), true);
+		Common.getSocketSt().send(pb.getPacket(), false);
 	}
 	
 	public static void clRequestPawn(int pawnId){
