@@ -5,6 +5,7 @@ import game.Common;
 import java.util.ArrayList;
 
 import net.NetProtocol;
+import net.Packet;
 
 import org.lwjgl.util.Point;
 import org.newdawn.slick.Graphics;
@@ -254,6 +255,29 @@ public class MapManager {
 		}
 		chunks[tmpP.getX()][tmpP.getY()] = c;
 		chunksLoaded.add(tmpP);
+	}
+	
+	public void createChunk(Packet pack){
+		MapChunk tmpC = new MapChunk();
+		tmpC.setWidth(chunkWidth);
+		tmpC.setHeight(chunkHeight);
+		tmpC.setTilesetId(pack.readInt());
+		tmpC.setLocX(pack.readInt());
+		tmpC.setLocY(pack.readInt());
+		tmpC.initEmpty();
+		for(int i = 0; i < tmpC.getWidth(); i++){
+			for(int j = 0; j < tmpC.getHeight(); j++){
+				Tile t = tmpC.getTiles()[i][j];
+				t.setGround(pack.readShort());
+				for(int g = 0; g < Tile.BOTTOM_LAYERS; g++){
+					t.setBottom(g, pack.readShort());
+				}
+				for(int g = 0; g < Tile.TOP_LAYERS; g++){
+					t.setTop(g, pack.readShort());
+				}
+			}
+		}
+		chunks[tmpC.getLocX()][tmpC.getLocY()] = tmpC;
 	}
 	
 	public int getWorldCamX() { return worldCamX; }

@@ -1,10 +1,15 @@
 package game;
 
+import java.util.zip.DataFormatException;
+import java.util.zip.Inflater;
+
 import org.newdawn.slick.util.Log;
 
 import entities.Entity;
 import entities.Pawn;
 import map.MapChunk;
+import map.MapManager;
+import map.Tile;
 import net.ClientSocket;
 import net.NetProtocol;
 import net.OpCodes;
@@ -65,13 +70,6 @@ public class GameNetworkHandler {
 			}
 			handleNewEntity(ent);
 		}
-		while(true){
-			MapChunk chunk = sock.getChunk();
-			if(chunk == null){
-				break;
-			}
-			Common.getMapManagerSt().addChunk(chunk);
-		}
 	}
 	
 	private void handlePacket(Packet pack){
@@ -85,6 +83,9 @@ public class GameNetworkHandler {
 			break;
 		case OpCodes.SR_TEXT_MSG:
 			handleChat(pack);
+			break;
+		case OpCodes.SR_MAP_CHUNK:
+			handleNewMapChunk(pack);
 			break;
 		default:
 			Log.warn("GameNetworkHandler: Invalid opcode " + opCode);
@@ -136,5 +137,25 @@ public class GameNetworkHandler {
 		String sender = pack.readString();
 		String msg = pack.readString();
 		Common.getChatBoxSt().push(sender + ": " + msg);
+	}
+	
+	private void handleNewMapChunk(Packet pack){
+	    /* Decompress chunk data */
+		Inflater decompresser = new Inflater();
+		decompresser.setInput(pack.data, 2, pack.data.length - 2);
+		MapManager m = Common.getMapManagerSt();
+		int chunkInBytes = (m.getChunkWidth() * m.getChunkWidth()) * 
+							((Tile.BOTTOM_LAYERS + Tile.TOP_LAYERS + 1) * 2) + 20;
+		byte[] result = new byte[chunkInBytes];
+		try {
+			int resultLength = decompresser.inflate(result);
+		} catch (DataFormatException e) {
+			e.printStackTrace();
+		}
+		decompresser.end();
+	    /* Create chunk */
+		Packet tmpPack = new Packet();
+		tmpPack.data = result;
+		m.createChunk(tmpPack);
 	}
 }

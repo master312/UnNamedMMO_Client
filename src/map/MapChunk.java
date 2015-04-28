@@ -81,7 +81,7 @@ public class MapChunk {
 			renderLayer(tmpTile, destX, destY, Layer.GROUND, 0, tileset);
 		}
 		if(tmpTile.getBottom(0) > -1){
-			for(int i = 0; i < tmpTile.getBottomCnt(); i++){
+			for(int i = 0; i < Tile.BOTTOM_LAYERS; i++){
 				if(tmpTile.getBottom(i) < 0)
 					break;
 				renderLayer(tmpTile, destX, destY, Layer.BOTTOM, i, tileset);
@@ -135,7 +135,11 @@ public class MapChunk {
 	public int getLocY() { return locY; }
 	public void setLocY(int locY) { this.locY = locY; }
 	
+	
+	public void setWidth(int width) { this.width = width; }
+	public void setHeight(int height) { this.height = height; }
 	public int getWidth() { return width; }
 	public int getHeight() { return height; }
+	public void setTilesetId(int tilesetId) { this.tilesetId = tilesetId; }
 	public int getTilesetId() { return tilesetId; }
 }

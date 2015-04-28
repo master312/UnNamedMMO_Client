@@ -3,9 +3,6 @@ package net;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import map.MapChunk;
-import map.Tile;
-
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -35,12 +32,6 @@ public class ClientSocket extends Listener{
 		client.getKryo().register(Player.class);
 		client.getKryo().register(entities.Entity.EntityType.class);
 		client.getKryo().register(entities.Entity.Direction.class);
-		client.getKryo().register(MapChunk.class);
-		client.getKryo().register(MapChunk.Layer.class);
-		client.getKryo().register(Tile.class);
-		client.getKryo().register(Tile[].class);
-		client.getKryo().register(Tile[][].class);
-		client.getKryo().register(short[].class);
 		
 		client.setTimeout(CONNECTION_TIMEOUT);
 
@@ -53,8 +44,7 @@ public class ClientSocket extends Listener{
 	
 	public void received(Connection c, Object p){
 		if(p instanceof Packet || p instanceof Entity
-				|| p instanceof Pawn || p instanceof Player
-				|| p instanceof MapChunk){
+				|| p instanceof Pawn || p instanceof Player){
 			packets.add(p);
 		}
 	}
@@ -86,18 +76,7 @@ public class ClientSocket extends Listener{
 		}
 		return null;
 	}
-	
-	public MapChunk getChunk(){
-		for(int i = 0; i < packets.size(); i++){
-			if(packets.get(i) instanceof MapChunk){
-				MapChunk tmpPack = (MapChunk) packets.get(i);
-				packets.remove(i);
-				return tmpPack;
-			}
-		}
-		return null;
-	}
-	
+
 	public void send(Object pack, boolean isReliable){
 		if(isReliable){
 			client.sendTCP(pack);
