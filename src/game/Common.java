@@ -16,6 +16,10 @@ public class Common {
 	
 	/* How many messages will be stored in chat history */
 	public static final int MAX_CHAT_HISTORY = 50;
+	/* If pawn is not updated for this many frames
+	 * Pawn.isUpdated() will return false 
+	 * Used for stoping moving animation */
+	public static final int UPDATE_FRAMES_STOP = 2;
 	
 	private ClientSocket socket = null;
 	private MapManager mapManager = null;

@@ -1,13 +1,11 @@
 package entities;
 
+import game.Common;
+
 import com.esotericsoftware.kryo.serializers.FieldSerializer.Optional;
 
 /* This is base class for every creature in game */
 public class Pawn extends Entity {
-	
-	/* If pawn is not updated for this many frames
-	 * isUpdated() will return false */
-	private static final int UPDATE_FRAMES_STOP = 2;
 	
 	private int maxHealth = 0;
 	private int currentHealth = 0;
@@ -79,6 +77,6 @@ public class Pawn extends Entity {
 	}
 
 	public void setUpdated() {
-		isUpdated = UPDATE_FRAMES_STOP;
+		isUpdated = Common.UPDATE_FRAMES_STOP;
 	}
 }
